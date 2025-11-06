@@ -2,11 +2,11 @@ PRPG
 
 Current version: 0.0.1
 
-This is my pet-project for fun only
+This is a pet project I'm working on for fun.
 
-There is some basic functionality, like creating player, fighting with monsters and etc.
+It currently has basic features like character creation, monster battles, and more.
 
-There will be more updates.
+Updates will be coming soon!
 
 INSTALLING:
 
@@ -30,3 +30,15 @@ pip install -r requirements.txt
 ```bash
 python main.py
 ```
+
+## What's in v0.0.1:
+- Player creation with name and race selection
+- Traveling through dungeons (needs improvement)
+- Fighting monsters
+- Gaining XP and leveling up
+- Debug menu (will be disabled in future versions)
+
+## Planned for v0.1:
+- Dungeon generator
+- Inventory and equipment system
+- Usable and equippable items
