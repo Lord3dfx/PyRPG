@@ -1,13 +1,7 @@
 class Inventory:
 
     def __init__(self):
-        self.__items = [{'name': 'Small healing potion',
-       'type': 'consumable',
-       'stackable': True,
-       'max_stack': 5,
-       'stats': {'healing': 5},
-       'value': 5}]
-        print('Inventory is created')
+        self.__items = []
 
     def get_all_items(self):
         if not self.__items:
@@ -43,6 +37,11 @@ class Inventory:
     def remove_item(self, index):
         if index > len(self.__items):
             return None
+
+        if self.__items[index-1].get('quantity', 1) > 1:
+            self.__items[index-1]['quantity'] -= 1
+            return True
+
         del self.__items[index-1]
         return True
 

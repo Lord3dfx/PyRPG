@@ -20,6 +20,11 @@ class Player:
         self.__update()
         self.__hp = self.__max_hp
 
+    def check_player_lvlup(self):
+        if self.exp >= self.lvl * 5:
+            self.level_up()
+            print(f"Congratulations, your level is up! Now it's\033[97;43;1m {self.lvl} \033[0mlevel.")
+
     @property
     def hp(self):
         return self.__hp
@@ -68,6 +73,8 @@ class Player:
 
     def add_exp(self, value):
         self.__exp += value
+        self.check_player_lvlup()
+        return True
 
     @property
     def max_hp(self):

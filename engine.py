@@ -70,22 +70,17 @@ def moving_in_dungeon():
     delayed_print("""There is two ways, where you can go... What would you choose?
             1. Turn left
             2. Turn right
-            3. Exit the dungeon
-            4. Get my info""")
+            3. Get your info
+            4. Look at your inventory
+            5. Exit the dungeon""")
     result = input('Your option: ')
     return result
-
-def check_player_lvlup(player):
-    if player.exp >= player.lvl * 5:
-        player.level_up()
-        print(f"Congratulations, your level is up! Now it's\033[97;43;1m {player.lvl} \033[0mlevel.")
 
 def check_win_condition(monster: Monster, player: Player):
     if monster.hp <= 0:
         delayed_print(f"The \033[97;47;1m {monster.get_name()} \033[0m is defeated!", 1)
         delayed_print(f"You get an {monster.get_lvl() + monster.get_max_hp()} EXP!")
         player.add_exp(monster.get_lvl() + monster.get_max_hp())
-        check_player_lvlup(player)
         return True
     elif player.hp <= 0:
         delayed_print(f"Oh! The \033[97;47;1m {monster.get_name()} \033[0m is defeat you!", 1)
@@ -154,7 +149,9 @@ def dungeon_entering(player):
         if option == '1':
             dice = random.randint(1, 10)
             if dice in range(1, 4):
-                delayed_print('You found a treasure!')
+                item = items.get_consumable_item(random.randint(1, 6))
+                delayed_print(f'You found a treasure! This is {item['name']}!')
+                player.add_item(item)
             elif dice in range(4, 7):
                 delayed_print('You see some skelets...')
             elif dice in range(7, 11):
@@ -172,10 +169,12 @@ def dungeon_entering(player):
             elif dice in range(7, 11):
                 battle_start(player)
         elif option == '3':
+            print(player.get_info())
+        elif option == '4':
+            inventory_menu(player)
+        elif option == '5':
             delayed_print('Returning to the village...')
             return
-        elif option == '4':
-            print(player.get_info())
         else:
             print('Failed to enter the dungeon. Try again...\n')
 
