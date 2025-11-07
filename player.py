@@ -28,7 +28,17 @@ class Player:
         self.__hp -= value
 
     def healing(self, value):
-        self.__hp += value
+        if self.__hp + value >= self.__max_hp + value:
+            print('You are already healthy')
+            return False
+        elif value >= self.__max_hp - self.__hp:
+            print(f'You restore {self.__max_hp - self.__hp} HP!')
+            self.__hp += self.__max_hp - self.__hp
+            return True
+        else:
+            self.__hp += value
+            print(f'You restore {value} HP!')
+            return True
 
     @property
     def name(self):
@@ -77,7 +87,12 @@ class Player:
             print('There is no item')
             return
 
-        if self.__inventory.get_item(index)['type'] == 'consumable':
+        item = self.__inventory.use_item(index)
+        if item and self.__inventory.get_item(index)['type'] == 'consumable':
+            effect_name, value = next(iter(item.items()))
+            result = getattr(self, effect_name)(value)
+            if not result:
+                return
             print(f"You have used {self.__inventory.get_item(index)['name']}")
             self.__inventory.remove_item(index)
 

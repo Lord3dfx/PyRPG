@@ -1,7 +1,6 @@
 import items
 from player import *
 from monsters import *
-from items import *
 import time
 import random
 
@@ -20,7 +19,7 @@ def debug_menu(player: Player):
         option = input('Select an option: ')
         match option:
             case '1':
-                player.add_item(items.get_item(1))
+                player.add_item(items.get_consumable_item(1))
             case '2':
                 if player.get_all_items():
                     print(player.get_all_items())
@@ -28,7 +27,7 @@ def debug_menu(player: Player):
                     print("Your bag is empty...")
             case '3':
                 if player.get_all_items():
-                    option = input('What item would you choose?')
+                    option = input('What item would you choose? \n')
                     print(player.get_item(int(option)))
                 else:
                     print("Your bag is empty...")
@@ -51,7 +50,7 @@ def inventory_menu(player: Player):
             case '1':
                 print(all_items)
             case '2':
-                option = input('What item would you choose?')
+                option = input('What item would you choose? \n')
                 if option == '':
                     print('Something went wrong... Try again')
                     return

@@ -1,11 +1,41 @@
-ITEMS = {
-    1:{'name': 'Healing potion',
+CONSUMABLE_ITEMS = {
+    1:{'name': 'Small healing potion',
        'type': 'consumable',
        'stackable': True,
        'max_stack': 5,
-       'stats': {'health_restore': 5},
+       'stats': {'healing': 5},
        'value': 5},
+    2:{'name': 'Medium healing potion',
+       'type': 'consumable',
+       'stackable': True,
+       'max_stack': 5,
+       'stats': {'healing': 10},
+       'value': 8},
+    3:{'name': 'Big healing potion',
+       'type': 'consumable',
+       'stackable': True,
+       'max_stack': 5,
+       'stats': {'healing': 5},
+       'value': 12},
+    4: {'name': 'Small exp potion',
+        'type': 'consumable',
+        'stackable': True,
+        'max_stack': 5,
+        'stats': {'add_exp': 2},
+        'value': 3},
+    5: {'name': 'Medium exp potion',
+        'type': 'consumable',
+        'stackable': True,
+        'max_stack': 5,
+        'stats': {'add_exp': 3},
+        'value': 6},
+    6: {'name': 'Big exp potion',
+        'type': 'consumable',
+        'stackable': True,
+        'max_stack': 5,
+        'stats': {'add_exp': 5},
+        'value': 9},
 }
 
-def get_item(item_id):
-    return ITEMS[item_id].copy() if item_id in ITEMS else None
+def get_consumable_item(item_id):
+    return CONSUMABLE_ITEMS[item_id].copy() if item_id in CONSUMABLE_ITEMS else None
