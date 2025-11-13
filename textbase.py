@@ -13,7 +13,7 @@ CHEST = ['Simple wooden chest',
          'Big metal chest',
          'Suspicious chest...',
          'Old rusty chest',
-         'Chest with a sticky slime'
+         'Chest with a sticky slime',
          'Golden chest']
 
 TRAP = {
@@ -23,7 +23,7 @@ TRAP = {
          'Big metal chest',
          'Suspicious chest...',
          'Old rusty chest',
-         'Chest with a sticky slime'
+         'Chest with a sticky slime',
          'Golden chest']
 }
 

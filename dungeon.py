@@ -1,4 +1,5 @@
 from monsters import Monster
+from engine import inventory_menu, battle_start
 import textbase
 import random
 import items
@@ -7,65 +8,12 @@ class Dungeon:
 
     def __init__(self, player):
         self.player = player
-        self.monster = None
+        self.monster = []
         self.events = []
-
-    def delayed_print(self, text, delayed=0.5):
+    @staticmethod
+    def delayed_print(text, delayed=0.5):
         print(text)
         time.sleep(delayed)
-
-    def check_win_condition(self, monster, player):
-        if monster.hp <= 0:
-            self.delayed_print(f"The \033[97;47;1m {monster.get_name()} \033[0m is defeated!", 1)
-            self.delayed_print(f"You get an {monster.get_lvl() + monster.get_max_hp()} EXP!")
-            player.add_exp(monster.get_lvl() + monster.get_max_hp())
-            return True
-        elif player.hp <= 0:
-            self.delayed_print(f"Oh! The \033[97;47;1m {monster.get_name()} \033[0m is defeat you!", 1)
-            self.delayed_print("Return into the village...")
-            player.restore()
-            return True
-        else:
-            return False
-
-    def battle_start(self,monster, player):
-        turn = 'player'
-        self.delayed_print('Watch out!!!', 1)
-        self.delayed_print(f"This is\033[97;1m {monster.get_name()}\033[0m!!! He is a \033[97;43;1m {monster.get_lvl()} \033[0m LVL.")
-        self.delayed_print(f"Now you must to fight!!!")
-        while True:
-            if turn == 'player':
-                print(f"""It's your turn. What you want to do?
-                1. Attack monster. Your attack is \033[97;41;1m {player.attack} \033[0m
-                2. Show monster info
-                3. Try to escape (You wil loose \033[97;41;1m {monster.get_atk()} \033[0m HP)""")
-                option = input('Your option: ')
-                match option:
-                    case '1':
-                        print('BAM!!!')
-                        monster.hp = monster.hp - player.attack
-                        self.delayed_print(f"You deal \033[97;41;1m {player.attack} \033[0mHP to the monster!")
-                        if self.check_win_condition(monster, player):
-                            break
-                        turn = 'monster'
-                    case '2':
-                        monster.get_info()
-                    case '3':
-                        self.delayed_print('You are running with shame from the monster...', 1)
-                        del monster
-                        break
-                    case _:
-                        print('Sorry, I didn\'t understand that')
-                        continue
-            elif turn == 'monster':
-                self.delayed_print(f"Now it's \033[97;47;1m {monster.get_name()}'s \033[0m turn!", 1)
-                player.take_damage(monster.get_atk())
-                if self.check_win_condition(monster, player):
-                    return False
-                self.delayed_print(
-                    f"He's kicked you on \033[97;41;1m {monster.get_atk()} \033[0m HP!. Your HP is {player.hp}", 1)
-                turn = 'player'
-        return True
 
     def generate_chest(self):
         dice = random.randint(1, 4)
@@ -96,63 +44,94 @@ class Dungeon:
                     self.generate_chest()
                 case 3:
                     self.generate_monster()
+        print('***Dungeon builded...')
 
-        return list(self.events)
-
-    def react_to_choice(self, event):
+    def react_to_choice(self, event, monster_number):
         print(event)
         if event == 'chest':
             item = items.get_consumable_item(random.randint(1, 6))
-            print(f'You get a {item['name']}')
+            print(f'You get a \033[106;1m {item['name']} \033[0m')
             self.player.add_item(item)
             return True
         elif event == 'chest_mimic':
             item = items.get_consumable_item(random.randint(1, 6))
             self.player.add_item(item)
             self.player.take_damage(2)
-            print(f"Oh, it was mimic! You got {item['name']} and 2 damage!")
+            print(f"Oh, it was mimic! You got \033[106;1m {item['name']} \033[0m and \033[97;41;1m 2 \033[0m damage!")
             return True
         elif event == 'trap':
-            print(f"You stuck in trap! You got 4 damage!")
+            print(f"You stuck in trap! You got \033[97;41;1m 4 \033[0m damage!")
             self.player.take_damage(4)
             return True
         elif event == 'monster':
-
-            self.battle_start(self.monster, self.player)
-
+            battle_start(self.monster[monster_number-1], self.player)
+            return True
+        elif event == 'next':
+            return False
         return False
 
     def clear_events(self):
         self.events = []
+        self.monster = []
+
+    @staticmethod
+    def print_list_menu(list_menu, option_number):
+        for item in list_menu:
+            print(f'{option_number}. {item}')
+            option_number += 1
 
     def dungeon_menu(self):
-        self.build_dungeon()
-        option_number = 1
-        print(f'{textbase.get_room_name()}')
+        list_menu = []
+        monster_number = 0
         while True:
-            for event in self.events:
-                if event['type'] == 'chest':
-                    print(f'{option_number}. {textbase.get_chest_name()}')
-                elif event['type'] == 'trap':
-                    print(f'{option_number}. {textbase.get_trap_name(event)}')
-                elif event['type'] == 'monster':
-                    self.monster = Monster(self.player)
-                    print(f'{option_number}. Oh! {self.monster.get_name()} is here and he is {self.monster.get_lvl()} LVL!')
-                option_number += 1
-            option_number = 1
-            print("'e' for leaving dungeon")
-            option = input('Your choice: ')
+            self.build_dungeon()
+            room_name = textbase.get_room_name()
+            if not list_menu:
+                for event in self.events:
+                    if event['type'] == 'chest':
+                        list_menu.append(textbase.get_chest_name())
+                    elif event['type'] == 'trap':
+                        list_menu.append(textbase.get_trap_name(event))
+                    elif event['type'] == 'chest_mimic':
+                        list_menu.append(textbase.get_chest_name())
+                    elif event['type'] == 'monster':
+                        self.monster.append(Monster(self.player))
+                        monster_number += 1
+                        list_menu.append(f'\033[97;1m{self.monster[monster_number-1].get_name()} \033[0m is here and he is \033[97;43;1m {self.monster[monster_number-1].get_lvl()} \033[0m LVL!')
 
-            if option == 'e':
-                break
+            monster_number = 0
 
-            result = self.react_to_choice(self.events[int(option)-1]['type'])
-            if result:
-                self.events.pop(int(option)-1)
-            else:
-                self.delayed_print('Sorry, I didn\'t understand that')
-                continue
+            while True:
+                has_monsters = any(event.get('type') == 'monster' for event in self.events)
 
-        self.clear_events()
+                if not has_monsters:
+                    self.events.append({'type': 'next'})
+                    list_menu.append('Going to the next room...')
+
+                print(f'\033[3m{room_name}\033[0m')
+                self.print_list_menu(list_menu, 1)
+                print("'e' for leaving dungeon")
+                print("'i' for open inventory")
+                option = input('Your choice: ')
+
+                if option == 'e':
+                    return False
+                if option == 'i':
+                    inventory_menu(self.player)
+                    continue
+
+                result = self.react_to_choice(self.events[int(option)-1]['type'], monster_number)
+
+                if result:
+                    self.events.pop(int(option)-1)
+                    list_menu.pop(int(option)-1)
+                    continue
+                else:
+                    list_menu = []
+                    self.clear_events()
+                    break
+
+
+
 
 
