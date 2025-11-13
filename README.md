@@ -1,4 +1,4 @@
-<h1 align="center">PRPG</h1>
+<h1 align="center">PyRPG</h1>
 
 Current version: 0.0.3
 

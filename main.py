@@ -1,7 +1,7 @@
 from engine import *
 
 while True:
-    print("Welcome to PRPG v0.0.3! Press 'n' to New game, or 'q' to Quit")
+    print("Welcome to PyRPG v0.0.3! Press 'n' to New game, or 'q' to Quit")
     option = input("Enter your option: ")
     match option:
         case "n":
