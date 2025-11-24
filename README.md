@@ -1,7 +1,7 @@
 <h1 align="center">PyRPG</h1>
 
 
-### Current version: 0.1.0
+### Current version: 0.1.1
 
 This is a pet project I'm working on for fun.
 
@@ -33,6 +33,9 @@ python main.py
 Now it's time to focus on improving the game. Many bugs are due to my lack of experience in programming, so they will disappear over time.
 
 In version 0.2, I plan to add more items (consumables, equipable items, artifacts), more unique monsters, more battle variety, and, of course, classes and races. But first of all, I will still focus on fixing bugs. 
+
+## What's in v0.1.1:
+- Fixed error with monster's position in dungeon. Now you will fight with right monster
 
 ## What's in v0.1.0:
 - Added equipment for player! The only way to add equipable item is still debug menu, but soon they will be added as loot
