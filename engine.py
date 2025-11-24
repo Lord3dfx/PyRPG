@@ -112,6 +112,8 @@ def battle_start(monster, player):
                 case '3':
                     Dungeon.delayed_print('You are running with shame from the monster...', 1)
                     player.take_damage(monster.get_atk())
+                    if check_win_condition(monster, player):
+                        return False
                     del monster
                     return True
                 case _:
@@ -170,6 +172,7 @@ def main_game(player):
             case "3":
                 inventory_menu(player)
             case "4":
+
                 dungeon_entering(player)
             case "5":
                 print("Returning to menu...")

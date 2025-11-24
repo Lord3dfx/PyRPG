@@ -35,10 +35,11 @@ class Dungeon:
         dice = random.randint(1, 3)
         self.events.append({'type':'trap', 'difficulty': dice})
 
-    def generate_monster(self):
-        self.events.append({'type':'monster'})
+    def generate_monster(self, pos=0):
+        self.events.append({'type':'monster', 'position': pos})
 
     def build_dungeon(self):
+        monster_position = 0
         for i in range(random.randint(1, 5)):
             dice = random.randint(1, 3)
             match dice:
@@ -47,15 +48,16 @@ class Dungeon:
                 case 2:
                     self.generate_chest()
                 case 3:
-                    self.generate_monster()
+                    self.generate_monster(monster_position)
+                    monster_position += 1
 
-    def react_to_choice(self, event, monster_number):
-        if event == 'chest':
+    def react_to_choice(self, event):
+        if event['type'] == 'chest':
             item = items.get_consumable_item(random.randint(1, 6))
             print(f'You get a \033[106;1m {item['name']} \033[0m')
             self.player.add_item(item)
             return True
-        elif event == 'chest_mimic':
+        elif event['type'] == 'chest_mimic':
             item = items.get_consumable_item(random.randint(1, 6))
             self.player.add_item(item)
             self.player.take_true_damage(2)
@@ -64,7 +66,7 @@ class Dungeon:
             if result:
                 return 'Player_dead'
             return True
-        elif event == 'trap':
+        elif ['type'] == 'trap':
             print(f"You stuck in trap! You got \033[97;41;1m 4 \033[0m damage!")
             self.player.take_true_damage(4)
             result = self.player.hp <= 0
@@ -73,8 +75,8 @@ class Dungeon:
                 return 'Player_dead'
 
             return True
-        elif event == 'monster':
-            result = battle_start(self.monster[monster_number-1], self.player)
+        elif event['type'] == 'monster':
+            result = battle_start(self.monster[event['position']], self.player)
 
             if not result:
                 return 'Player_dead'
@@ -89,15 +91,16 @@ class Dungeon:
         self.monster = []
 
     @staticmethod
-    def print_list_menu(list_menu, option_number):
+    def print_list_menu(list_menu, number):
+        option_number = number
         for item in list_menu:
             print(f'    {option_number}. {item}')
             option_number += 1
 
     def dungeon_menu(self):
-        list_menu = []
-        monster_number = 0
+        print('Dungeon menu')
         while True:
+            list_menu = []
             self.build_dungeon()
             room_name = textbase.get_room_name()
             if not list_menu:
@@ -110,10 +113,8 @@ class Dungeon:
                         list_menu.append(textbase.get_chest_name())
                     elif event['type'] == 'monster':
                         self.monster.append(Monster(self.player))
-                        monster_number += 1
-                        list_menu.append(f'\033[97;1m{self.monster[monster_number-1].get_name()} \033[0mis here and he is \033[97;43;1m {self.monster[monster_number-1].get_lvl()} \033[0m LVL!')
+                        list_menu.append(f'\033[97;1m{self.monster[event['position']].get_name()} \033[0mis here and he is \033[97;43;1m {self.monster[event['position']].get_lvl()} \033[0m LVL!')
 
-            monster_number = 0
 
             while True:
                 has_monsters = any(event.get('type') == 'monster' for event in self.events)
@@ -140,7 +141,7 @@ class Dungeon:
                     self.player.get_info()
                     continue
 
-                result = self.react_to_choice(self.events[int(option)-1]['type'], monster_number)
+                result = self.react_to_choice(self.events[int(option)-1])
 
                 if result == 'Player_dead':
                     player_is_dead(self.player)
@@ -152,8 +153,8 @@ class Dungeon:
                     continue
 
                 else:
-                    list_menu = []
                     self.clear_events()
+
                     break
 
 
