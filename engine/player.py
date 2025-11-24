@@ -1,5 +1,6 @@
-from inventory import Inventory
-from equip import Equip
+from .inventory import Inventory
+from .equip import Equip
+
 class Player:
 
     def __init__(self, name, race):
@@ -10,7 +11,7 @@ class Player:
         self.__inventory = Inventory()
         self.__equip = Equip()
 
-        self.__base_atk = 2
+        self.__base_atk = 1
         self.__base_max_hp = 5
         self.__base_armour = 0
 
@@ -18,6 +19,9 @@ class Player:
         self.__max_hp = 0
         self.__armour = 0
         self.__hp = self.__base_max_hp
+
+        self.__dot = 0
+        self.__debuff = ''
 
         self.__update()
 
@@ -49,8 +53,11 @@ class Player:
     def hp(self):
         return self.__hp
 
-    def take_damage(self, value):
-        result = value - self.__armour
+    def take_damage(self, value, pierce = 0):
+        piercing_armor = self.__armour - pierce
+        if piercing_armor < 0:
+            piercing_armor = 0
+        result = value - piercing_armor
         if result < 0:
             result = 0
         self.__hp -= result
@@ -58,6 +65,20 @@ class Player:
 
     def take_true_damage(self, value):
         self.__hp -= value
+
+    def clear_dot(self):
+        self.__dot = 0
+        self.__debuff = ''
+
+    def set_dot(self, value, debuff):
+        self.__dot += value
+        self.__debuff = debuff
+
+    def take_dot(self):
+        if self.__dot > 0:
+            self.__hp -= 1
+            self.__dot -= 1
+            print(f'Oh! you get 1 dmg from {self.__debuff}!')
 
     def healing(self, value):
         if self.__hp == self.__max_hp:

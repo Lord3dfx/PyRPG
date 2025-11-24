@@ -1,7 +1,7 @@
 <h1 align="center">PyRPG</h1>
 
 
-### Current version: 0.1.1
+### Current version: 0.1.2
 
 This is a pet project I'm working on for fun.
 
@@ -32,7 +32,14 @@ python main.py
 # Planned for v0.2:
 Now it's time to focus on improving the game. Many bugs are due to my lack of experience in programming, so they will disappear over time.
 
-In version 0.2, I plan to add more items (consumables, equipable items, artifacts), more unique monsters, more battle variety, and, of course, classes and races. But first of all, I will still focus on fixing bugs. 
+In version 0.2, I plan to add more items (consumables, equipable items, artifacts), more unique monsters, more battle variety, and, of course, classes and races. But first of all, I will still focus on fixing bugs.
+
+## What's in v0.1.2:
+- Reworked enemies! New enemies with some special abilities.
+- Active and passive monster's abilities
+- Restructured files and folders
+- Added DoT damage to player
+- Fixed some minor and major bugs
 
 ## What's in v0.1.1:
 - Fixed error with monster's position in dungeon. Now you will fight with right monster

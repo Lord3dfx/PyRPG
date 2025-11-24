@@ -1,46 +1,28 @@
-from player import Player
+#import sys
+#import os
+#sys.path.append(os.path.dirname(__file__))
+from .player import Player
+
 import time
 
 races = ('Human', 'Dwarf', 'Elf')
 
 def debug_menu(player: Player):
-    from items import get_equipped_item
+    from .monsters import Monster
     print('Entering debug mode...')
     while True:
         print(f'Loading player...')
         print("""DEBUG! Select an option:
-        1. Add sword
-        2. Add dagger
-        3. Add helm
-        4. Equip
-        5. Print bonus stats
-        6. Get inventory
-        7. Get my stats
+        1. Get monster
         q. Quit""")
 
         option = input('Select an option: ')
         match option:
             case '1':
-                result = player.add_item(get_equipped_item(1))
-                print(f'Get {result} item')
-            case '2':
-                result = player.add_item(get_equipped_item(2))
-                print(f'Get {result} item')
-            case '3':
-                result = player.add_item(get_equipped_item(3))
-                print(f'Get {result} item')
-            case '4':
-                option = input('Select an option: ')
-                player.use_item(int(option))
-            case '5':
-                print(player.get_bonus_stats())
-            case '6':
-                all_items = player.get_all_items()
-                if not all_items:
-                    print("Your bag is empty...\n")
-                print(all_items)
-            case '7':
-                print(player.get_info())
+                monster = Monster(player)
+                print(monster.get_name())
+                result = battle_start(monster, player)
+                del monster
             case 'q':
                 break
 
@@ -85,13 +67,16 @@ def inventory_menu(player):
                 continue
 
 def battle_start(monster, player):
-    from dungeon import Dungeon
+    from .dungeon import Dungeon
     turn = 'player'
     Dungeon.delayed_print('Watch out!!!', 1)
     Dungeon.delayed_print(f"This is\033[97;1m {monster.get_name()}\033[0m!!! He is a \033[97;43;1m {monster.get_lvl()} \033[0m LVL.")
     Dungeon.delayed_print(f"Now you must to fight!!!")
     while True:
         if turn == 'player':
+            player.take_dot()
+            if check_win_condition(monster, player):
+                return False
             print(f"""It's your turn. What you want to do?
             1. Attack monster. Your attack is \033[97;41;1m {player.attack} \033[0m
             2. Show monster info
@@ -103,12 +88,12 @@ def battle_start(monster, player):
                     monster.hp = monster.hp - player.attack
                     if monster.hp <= 0:
                         monster.hp = 0
-                    Dungeon.delayed_print(f"You deal \033[97;41;1m {player.attack} \033[0mHP to the monster! Monster hp is \033[97;42;1m {monster.hp} \033[0m")
+                    Dungeon.delayed_print(f"You deal \033[97;41;1m {player.attack} \033[0m HP to the monster! Monster hp is \033[97;42;1m {monster.hp} \033[0m")
                     if check_win_condition(monster, player):
                         return True
                     turn = 'monster'
                 case '2':
-                    monster.get_info()
+                    monster.get_battle_info()
                 case '3':
                     Dungeon.delayed_print('You are running with shame from the monster...', 1)
                     player.take_damage(monster.get_atk())
@@ -121,26 +106,27 @@ def battle_start(monster, player):
                     continue
         elif turn == 'monster':
             Dungeon.delayed_print(f"Now it's \033[97;47;1m {monster.get_name()}'s \033[0m turn!", 1)
-            player_dmg = player.take_damage(monster.get_atk())
+            player_dmg = monster.attack(player)
             if check_win_condition(monster, player):
                 return False
-            Dungeon.delayed_print(f"He's kicked you on \033[97;41;1m {monster.get_atk()} \033[0m HP!. You get \033[97;41;1m {player_dmg} \033[0m damage! Your HP is \033[97;42;1m {player.hp} \033[0m", 1)
+            Dungeon.delayed_print(f"He's attack you on \033[97;41;1m {player_dmg} \033[0m HP!. \033[0m damage! Your HP is \033[97;42;1m {player.hp} \033[0m", 1)
             turn = 'player'
     return True
 
 def check_win_condition(monster, player):
-    from dungeon import Dungeon
+    from .dungeon import Dungeon
     if monster.hp <= 0:
         Dungeon.delayed_print(f"The \033[97;47;1m {monster.get_name()} \033[0m is defeated!", 1)
         Dungeon.delayed_print(f"You get an {monster.get_lvl() + monster.get_max_hp()} EXP!")
         player.add_exp(monster.get_lvl() + monster.get_max_hp())
         return True
     elif player.hp <= 0:
+        player.clear_dot()
         return True
     return False
 
 def player_is_dead(player):
-    from dungeon import Dungeon
+    from .dungeon import Dungeon
     result = player.drop_all_items()
     Dungeon.delayed_print(f"Oops! It seems like you died and lost {result} items from your inventory...!", 1)
     Dungeon.delayed_print("Return into the village...")
@@ -148,7 +134,7 @@ def player_is_dead(player):
 
 
 def dungeon_entering(player):
-    from dungeon import Dungeon
+    from .dungeon import Dungeon
     dungeon = Dungeon(player)
     dungeon.dungeon_menu()
     del dungeon

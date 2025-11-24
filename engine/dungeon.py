@@ -1,8 +1,7 @@
-from monsters import Monster
-from engine import inventory_menu, battle_start, player_is_dead
-import textbase
+from .monsters import Monster
+from .engine import inventory_menu, battle_start, player_is_dead
+from data import textbase, items
 import random
-import items
 import time
 class Dungeon:
 

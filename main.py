@@ -1,13 +1,13 @@
-from engine import *
+from engine import engine
 
 while True:
-    print("Welcome to PyRPG v0.1.0! Press 'n' to New game, or 'q' to Quit")
+    print("Welcome to PyRPG v0.1.2! Press 'n' to New game, or 'q' to Quit")
     option = input("Enter your option: ")
     match option:
         case "n":
-            player = create_player()
+            player = engine.create_player()
             if player:
-                main_game(player)
+                engine.main_game(player)
         case "q":
             print("Thank you for playing!")
             break
