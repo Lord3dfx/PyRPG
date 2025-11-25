@@ -85,10 +85,8 @@ def battle_start(monster, player):
             match option:
                 case '1':
                     print('BAM!!!')
-                    monster.hp = monster.hp - player.attack
-                    if monster.hp <= 0:
-                        monster.hp = 0
-                    Dungeon.delayed_print(f"You deal \033[97;41;1m {player.attack} \033[0m HP to the monster! Monster hp is \033[97;42;1m {monster.hp} \033[0m")
+                    result = monster.take_damage(player.attack)
+                    Dungeon.delayed_print(f"You deal \033[97;41;1m {player.attack} \033[0m HP to the monster! Monster hp is \033[97;42;1m {result} \033[0m")
                     if check_win_condition(monster, player):
                         return True
                     turn = 'monster'
@@ -109,7 +107,7 @@ def battle_start(monster, player):
             player_dmg = monster.attack(player)
             if check_win_condition(monster, player):
                 return False
-            Dungeon.delayed_print(f"He's attack you on \033[97;41;1m {player_dmg} \033[0m HP!. \033[0m damage! Your HP is \033[97;42;1m {player.hp} \033[0m", 1)
+            Dungeon.delayed_print(f"He's attack you on \033[97;41;1m {player_dmg} \033[0m HP!. Your HP is \033[97;42;1m {player.hp} \033[0m", 1)
             turn = 'player'
     return True
 

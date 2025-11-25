@@ -1,7 +1,7 @@
 <h1 align="center">PyRPG</h1>
 
 
-### Current version: 0.1.2
+### Current version: 0.1.3
 
 This is a pet project I'm working on for fun.
 
@@ -33,6 +33,11 @@ python main.py
 Now it's time to focus on improving the game. Many bugs are due to my lack of experience in programming, so they will disappear over time.
 
 In version 0.2, I plan to add more items (consumables, equipable items, artifacts), more unique monsters, more battle variety, and, of course, classes and races. But first of all, I will still focus on fixing bugs.
+
+## What's in v0.1.3:
+- Added evasion chance to monsters
+- Added 3 new monster and 2 new abilities
+- Fixed some minor bugs
 
 ## What's in v0.1.2:
 - Reworked enemies! New enemies with some special abilities.

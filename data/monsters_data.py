@@ -27,6 +27,21 @@ MONSTERS = {
             'have_armor': False,
             'abilities': 'rabid'
         },
+        {
+            'name': 'Slime',
+            'have_armor': False,
+            'abilities': 'acid'
+        },
+        {
+            'name': 'Spider',
+            'have_armor': False,
+            'abilities': 'poison_bite'
+        },
+        {
+            'name': 'Ghost',
+            'have_armor': False,
+            'abilities': 'ghost_form'
+        },
         ],
     2: [
         {
@@ -99,7 +114,23 @@ MONSTERS_ABILITIES = {
         'actions': {
             'chance': 25,
         }
-    }
+    },
+    'acid': {
+        'name': 'Acid',
+        'description': 'Deal damage to attacking',
+        'type': 'passive',
+        'actions': {
+            'dot': 1,
+        }
+    },
+    'ghost_form': {
+        'name': 'Ghost form',
+        'description': 'Chance to evade attack',
+        'type': 'passive',
+        'actions': {
+            'chance_to_evade': 5,
+        }
+    },
 }
 
 def get_monster(level):
